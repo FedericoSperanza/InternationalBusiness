@@ -20,38 +20,73 @@ namespace InternationalBusiness.Controllers
     {
         CurrencyService _currencyService = new CurrencyService();
         private readonly IConfiguration Configuration;
+        private readonly string _currenciesApi;
         public CurrencyController(IConfiguration configuration)
         {
             Configuration = configuration;
+            _currenciesApi = Configuration["EndPoints:CurrenciesAPI"];
         }
 
         // GET: api/Currencies
         [HttpGet]
-        public async Task<CustomResponse<List<Currency>>> Get()
-        {      
-            var myKeyValue = Configuration["EndPoints:CurrenciesAPI"];
-            var resp = await _currencyService.GetAllCurrencies(myKeyValue);
+        public async Task<CustomResponse<List<Currency>>> GetAllCurrencies()
+        {               
+            var resp = await _currencyService.GetAllCurrencies(_currenciesApi);
             if (resp.Data != null) { 
                 //ToDo override bkCurrency file with updated data
                 return resp;
             }
             else
+                
             {
                 CustomResponse<List<Currency>> response = new CustomResponse<List<Currency>>();
+                try { 
                 string json = System.IO.File.ReadAllText("bkpCurrency.json");
-                var curr = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Currency>>(json);
-                response.Data = curr;
+                var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Currency>>(json);
+                response.Data = jsonCurrencies;
                 response.Message = "This Data is returned from backup file since the API Endpoint was down";
                 return response;
+                }catch(Exception e)
+                {
+                    response.Message = "Error when trying to list all the currencies.";
+                    response.ErrorMessage = e.Message;
+                    response.Data = null;
+                    return response;
+                }
             }
 
         }
 
         // GET: api/Currencies/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{currencyType}", Name = "Get")]
+        public async Task<CustomResponse<Currency>> GetCurrencyByType(string currencyType)
         {
-            return "value";
+            var resp = await _currencyService.GetCurrencyByType(_currenciesApi, currencyType);
+            if(resp.Data != null)
+            {
+                return resp;
+            }
+            else
+            {
+                CustomResponse<Currency> response = new CustomResponse<Currency>();
+                try {                
+                string json = System.IO.File.ReadAllText("bkpCurrency.json");
+                var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Currency>>(json);
+                var filteredCurrency = (from c in jsonCurrencies
+                                        where c.@from == currencyType
+                                        select new { c }).FirstOrDefault();
+
+                response.Data = filteredCurrency.c;
+                response.Message = "This Data is returned from backup file since the API Endpoint was down";
+                return response;
+                }catch(Exception e)
+                {
+                    response.Message = "Currency Not Found.";
+                    response.ErrorMessage = e.Message;
+                    response.Data = null;
+                    return response;
+                }
+            }
         }
 
         // POST: api/Currencies
