@@ -10,18 +10,19 @@ namespace InternationalBusiness.Core.Currency
 {
     public class CurrencyService : ICurrencyService
     {
-
-        public CurrencyService()
+        private readonly string _currenciesApi;
+        public CurrencyService(string currenciesAPI)
         {
+            _currenciesApi = currenciesAPI;
         }
 
-        public async Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrencies(string endpointAPI)
+        public async Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrencies()
         {
             Models.CustomResponse<List<Models.Currency>> customResponse = new Models.CustomResponse<List<Models.Currency>>();
             try
             {
                 var client = new HttpClient();
-                HttpResponseMessage Res = await client.GetAsync(endpointAPI);
+                HttpResponseMessage Res = await client.GetAsync(_currenciesApi);
                 if (Res.IsSuccessStatusCode)
                 {
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;
@@ -44,13 +45,13 @@ namespace InternationalBusiness.Core.Currency
                 return customResponse;
             }
         }
-        public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByType(string endpointAPI, string currencyType)
+        public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByType(string currencyType)
         {
             Models.CustomResponse<Models.Currency> customResponse = new Models.CustomResponse<Models.Currency>();
             try
             {
                 var client = new HttpClient();
-                HttpResponseMessage Res = await client.GetAsync(endpointAPI);
+                HttpResponseMessage Res = await client.GetAsync(_currenciesApi);
                 if (Res.IsSuccessStatusCode)
                 {
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;

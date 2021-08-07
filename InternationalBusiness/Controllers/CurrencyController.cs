@@ -18,26 +18,26 @@ namespace InternationalBusiness.Controllers
     [ApiController]
     public class CurrencyController : ControllerBase
     {
-        CurrencyService _currencyService = new CurrencyService();
+        CurrencyService _currencyService;
         private readonly IConfiguration Configuration;
         private readonly string _currenciesApi;
         public CurrencyController(IConfiguration configuration)
         {
             Configuration = configuration;
             _currenciesApi = Configuration["EndPoints:CurrenciesAPI"];
+            _currencyService = new CurrencyService(_currenciesApi);
         }
 
         // GET: api/Currencies
         [HttpGet]
         public async Task<CustomResponse<List<Currency>>> GetAllCurrencies()
         {               
-            var resp = await _currencyService.GetAllCurrencies(_currenciesApi);
+            var resp = await _currencyService.GetAllCurrencies();
             if (resp.Data != null) { 
                 //ToDo override bkCurrency file with updated data
                 return resp;
             }
-            else
-                
+            else             
             {
                 CustomResponse<List<Currency>> response = new CustomResponse<List<Currency>>();
                 try { 
@@ -61,7 +61,7 @@ namespace InternationalBusiness.Controllers
         [HttpGet("{currencyType}", Name = "Get")]
         public async Task<CustomResponse<Currency>> GetCurrencyByType(string currencyType)
         {
-            var resp = await _currencyService.GetCurrencyByType(_currenciesApi, currencyType);
+            var resp = await _currencyService.GetCurrencyByType(currencyType);
             if(resp.Data != null)
             {
                 return resp;

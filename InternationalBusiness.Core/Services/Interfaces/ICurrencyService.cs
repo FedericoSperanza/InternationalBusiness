@@ -7,7 +7,7 @@ namespace InternationalBusiness.Core.Services.Interfaces
 {
     interface ICurrencyService
     {
-        Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrencies(string endpointAPI);
-        Task<Models.CustomResponse<Models.Currency>> GetCurrencyByType(string endpointAPI, string currencyType);
+        Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrencies();
+        Task<Models.CustomResponse<Models.Currency>> GetCurrencyByType(string currencyType);
     }
 }
