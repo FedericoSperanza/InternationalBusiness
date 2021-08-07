@@ -10,6 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using InternationalBusiness.Core.Models;
+using Microsoft.AspNetCore.Diagnostics;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace InternationalBusiness
 {
@@ -17,7 +21,10 @@ namespace InternationalBusiness
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -26,6 +33,11 @@ namespace InternationalBusiness
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            // Add functionality to inject IOptions<T>
+            services.AddOptions();
+
+            // Add our Config object so it can be injected
+            services.Configure<EndPoints>(Configuration.GetSection("EndPoints"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,7 +51,6 @@ namespace InternationalBusiness
             {
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseMvc();
         }
