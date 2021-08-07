@@ -1,0 +1,70 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj": {}
+  },
+  "projects": {
+    "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
+        "projectName": "InternationalBusiness",
+        "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
+        "packagesPath": "C:\\Users\\Federico\\.nuget\\packages\\",
+        "outputPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Federico\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
+            "Microsoft.AspNetCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.1, )",
+              "autoReferenced": true
+            },
+            "Microsoft.AspNetCore.Razor.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.2, )"
+            },
+            "Microsoft.NETCore.App": {
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}

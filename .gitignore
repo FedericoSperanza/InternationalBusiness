@@ -1,0 +1,12 @@
+
+.vs/InternationalBusiness/v16/.suo
+.vs/InternationalBusiness/v16/Server/sqlite3/db.lock
+*.ide
+*.ide-shm
+*.ide-wal
+*.pdb
+*.cache
+*.targets
+InternationalBusiness/bin/Debug/netcoreapp2.1/InternationalBusiness.dll
+*.props
+*.dll
