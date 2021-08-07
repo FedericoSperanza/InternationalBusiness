@@ -12,3 +12,6 @@ E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusine
 E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusiness\obj\Debug\netcoreapp2.1\InternationalBusiness.RazorTargetAssemblyInfo.cache
 E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusiness\obj\Debug\netcoreapp2.1\InternationalBusiness.dll
 E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusiness\obj\Debug\netcoreapp2.1\InternationalBusiness.pdb
+E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusiness\bin\Debug\netcoreapp2.1\InternationalBusiness.Core.dll
+E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusiness\bin\Debug\netcoreapp2.1\InternationalBusiness.Core.pdb
+E:\Road to Europe\España\Hiberus\Test\InternationalBusiness\InternationalBusiness\obj\Debug\netcoreapp2.1\InternationalBusiness.csproj.CopyComplete

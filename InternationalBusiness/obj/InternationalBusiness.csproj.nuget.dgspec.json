@@ -4,14 +4,14 @@
     "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj": {}
   },
   "projects": {
-    "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj": {
+    "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness.Core\\InternationalBusiness.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
-        "projectName": "InternationalBusiness",
-        "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
+        "projectUniqueName": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness.Core\\InternationalBusiness.Core.csproj",
+        "projectName": "InternationalBusiness.Core",
+        "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness.Core\\InternationalBusiness.Core.csproj",
         "packagesPath": "C:\\Users\\Federico\\.nuget\\packages\\",
-        "outputPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\obj\\",
+        "outputPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -41,6 +41,70 @@
       "frameworks": {
         "netcoreapp2.1": {
           "dependencies": {
+            "Microsoft.NETCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "System.DirectoryServices": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
+        "projectName": "InternationalBusiness",
+        "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
+        "packagesPath": "C:\\Users\\Federico\\.nuget\\packages\\",
+        "outputPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Federico\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {
+              "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness.Core\\InternationalBusiness.Core.csproj": {
+                "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness.Core\\InternationalBusiness.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
             "Microsoft.AspNetCore.App": {
               "suppressParent": "All",
               "target": "Package",
@@ -56,6 +120,10 @@
               "target": "Package",
               "version": "[2.1.0, )",
               "autoReferenced": true
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[2.1.10, )"
             }
           },
           "imports": [
