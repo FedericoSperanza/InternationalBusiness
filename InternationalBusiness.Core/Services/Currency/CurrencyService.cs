@@ -23,23 +23,24 @@ namespace InternationalBusiness.Core.Currency
                 var client = new HttpClient();
                 HttpResponseMessage Res = await client.GetAsync(endpointAPI);
                 if (Res.IsSuccessStatusCode)
-                {                  
-                    List<Models.Currency> currencyList = new List<Models.Currency>();
+                {
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;
-                    var serialized = JsonConvert.DeserializeObject<List<Models.Currency>>(ObjResponse);
-                    customResponse.Data = serialized;
+                    var serializedCurrencies = JsonConvert.DeserializeObject<List<Models.Currency>>(ObjResponse);
+                    customResponse.Data = serializedCurrencies;
+                    customResponse.isSuccess = true;                  
                     return customResponse;
                 }
                 else
                 {
-                    /////ToDo handling when API is down Get File Json locally
-                    customResponse.ErrorMessage = "ToDo Get From File";
+                    customResponse.Data = null;
+                    customResponse.isSuccess = false;
                     return customResponse;
                 }
             }
             catch (Exception e)
             {
                 customResponse.ErrorMessage = e.Message;
+                customResponse.Data = null;
                 return customResponse;
             }
         }

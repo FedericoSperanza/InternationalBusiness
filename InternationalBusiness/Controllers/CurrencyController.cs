@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using InternationalBusiness.Core.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace InternationalBusiness.Controllers
 {
@@ -27,10 +28,23 @@ namespace InternationalBusiness.Controllers
         // GET: api/Currencies
         [HttpGet]
         public async Task<CustomResponse<List<Currency>>> Get()
-        {
+        {      
             var myKeyValue = Configuration["EndPoints:CurrenciesAPI"];
             var resp = await _currencyService.GetAllCurrencies(myKeyValue);
-            return resp;
+            if (resp.Data != null) { 
+                //ToDo override bkCurrency file with updated data
+                return resp;
+            }
+            else
+            {
+                CustomResponse<List<Currency>> response = new CustomResponse<List<Currency>>();
+                string json = System.IO.File.ReadAllText("bkpCurrency.json");
+                var curr = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Currency>>(json);
+                response.Data = curr;
+                response.Message = "This Data is returned from backup file since the API Endpoint was down";
+                return response;
+            }
+
         }
 
         // GET: api/Currencies/5
