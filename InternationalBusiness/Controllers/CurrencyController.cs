@@ -29,7 +29,7 @@ namespace InternationalBusiness.Controllers
         public async Task<CustomResponse<List<Currency>>> Get()
         {
             var myKeyValue = Configuration["EndPoints:CurrenciesAPI"];
-            var resp = await _currencyService.GetAllCurrencies("error");
+            var resp = await _currencyService.GetAllCurrencies(myKeyValue);
             return resp;
         }
 
