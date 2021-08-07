@@ -28,7 +28,7 @@ namespace InternationalBusiness.Controllers
             _currencyService = new CurrencyService(_currenciesApi);
         }
 
-        // GET: api/Currencies
+        // GET: api/Currency
         [HttpGet]
         public async Task<CustomResponse<List<Currency>>> GetAllCurrencies()
         {               
