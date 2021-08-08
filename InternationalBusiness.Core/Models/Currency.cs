@@ -9,6 +9,6 @@ namespace InternationalBusiness.Core.Models
     {
         public string from { get; set; }
         public string to { get; set; }
-        public decimal rate { get; set; }
+        public double rate { get; set; }
     }
 }
