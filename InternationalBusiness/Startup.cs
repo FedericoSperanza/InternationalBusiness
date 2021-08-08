@@ -14,6 +14,7 @@ using InternationalBusiness.Core.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using InternationalBusiness.Core.Services;
 
 namespace InternationalBusiness
 {
@@ -32,12 +33,15 @@ namespace InternationalBusiness
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             // Add functionality to inject IOptions<T>
             services.AddOptions();
 
             // Add our Config object so it can be injected
             services.Configure<EndPoints>(Configuration.GetSection("EndPoints"));
+
+            services.AddScoped(typeof(CurrencyService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +57,7 @@ namespace InternationalBusiness
             }
             app.UseHttpsRedirection();
             app.UseMvc();
+
         }
     }
 }
