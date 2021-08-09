@@ -7,7 +7,7 @@ namespace InternationalBusiness.Core.Models
 {
     public class TransactionResume
     {
-        public List<Transaction> transactionList {get; set;}
+        public List<TranItemResume> transactionList {get; set;}
         public double totalAmount { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace InternationalBusiness.Core.Services.Interfaces
 {
     public interface ITransactionService
     {
-        Task<Models.CustomResponse<List<Models.Transaction>>> GetAllTransactions();
+        Task<Models.CustomResponse<List<Models.TranItemResume>>> GetAllTransactions();
         Task<Models.CustomResponse<Models.TransactionResume>> GetTransactionBySku(string sku);
-        Task<Models.CustomResponse<List<Models.Transaction>>> GetAllTransactionsBackup();
+        Task<Models.CustomResponse<List<Models.TranItemResume>>> GetAllTransactionsBackup();
         Task<Models.CustomResponse<Models.TransactionResume>> GetTransactionBySkuBackup(string sku);
     }
 }

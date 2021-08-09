@@ -25,7 +25,7 @@ namespace InternationalBusiness.Controllers
         }
         // GET: api/Transaction
         [HttpGet]
-        public async Task<CustomResponse<List<Transaction>>> GetAllCurrencies()
+        public async Task<CustomResponse<List<TranItemResume>>> GetAllCurrencies()
         {
             var resp = await _transactionService.GetAllTransactions();
             if (resp.Data != null)
