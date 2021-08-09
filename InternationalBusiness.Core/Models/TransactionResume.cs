@@ -8,6 +8,6 @@ namespace InternationalBusiness.Core.Models
     public class TransactionResume
     {
         public List<Transaction> transactionList {get; set;}
-        public int totalAmount { get; set; }
+        public double totalAmount { get; set; }
     }
 }
