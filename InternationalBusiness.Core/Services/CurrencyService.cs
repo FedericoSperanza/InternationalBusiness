@@ -14,11 +14,13 @@ namespace InternationalBusiness.Core.Services
     {
         private readonly string _currenciesApi;
         private readonly IConfiguration _configuration;
+        private readonly string _bkpFilePath;
         
         public CurrencyService(IConfiguration config)
         {
             _configuration = config;
             _currenciesApi = _configuration["EndPoints:CurrenciesAPI"];
+            _bkpFilePath = _configuration["BackupFilesPaths:CurrenciesPath"];
         }
 
         public async Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrencies()
@@ -84,11 +86,12 @@ namespace InternationalBusiness.Core.Services
             }
 
         }
-        public async Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrenciesBackup(string jsonFile)
+        public async Task<Models.CustomResponse<List<Models.Currency>>> GetAllCurrenciesBackup()
         {
             Models.CustomResponse<List<Models.Currency>> response = new Models.CustomResponse<List<Models.Currency>>();
             try
-            {       
+            {
+                string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
                 var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
                 response.Data = jsonCurrencies;
                 response.Message = "This Data is returned from backup file since the API Endpoint was down";
@@ -102,17 +105,29 @@ namespace InternationalBusiness.Core.Services
             }
             
         }
-        public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByTypeBackup(string jsonFile, string currencyType)
+        public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByTypeBackup(string currencyType)
         {
             Models.CustomResponse<Models.Currency> response = new Models.CustomResponse<Models.Currency>();
-            var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
-            var filteredCurrency = (from c in jsonCurrencies
-                                    where c.@from == currencyType
-                                    select new { c }).FirstOrDefault();
+            try
+            {
+                string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
+                var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
+                var filteredCurrency = (from c in jsonCurrencies
+                                        where c.@from == currencyType
+                                        select new { c }).FirstOrDefault();
 
-            response.Data = filteredCurrency.c;
-            response.Message = "This Data is returned from backup file since the API Endpoint was down";
-            return response;
+                response.Data = filteredCurrency.c;
+                response.Message = "This Data is returned from backup file since the API Endpoint was down";
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.Message = "Error when trying to list Currency Type.";
+                response.ErrorMessage = e.Message;
+                response.Data = null;
+                return response;
+            }
+
         }
     }
 }
