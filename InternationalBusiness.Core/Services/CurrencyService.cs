@@ -15,7 +15,7 @@ namespace InternationalBusiness.Core.Services
         private readonly string _currenciesApi;
         private readonly IConfiguration _configuration;
         private readonly string _bkpFilePath;
-        
+
         public CurrencyService(IConfiguration config)
         {
             _configuration = config;
@@ -35,7 +35,10 @@ namespace InternationalBusiness.Core.Services
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;
                     var serializedCurrencies = JsonConvert.DeserializeObject<List<Models.Currency>>(ObjResponse);
                     customResponse.Data = serializedCurrencies;
-                    customResponse.isSuccess = true;                  
+                    customResponse.isSuccess = true;
+                    string jsonBak = JsonConvert.SerializeObject(serializedCurrencies, Formatting.Indented);
+                    //write res to bak file
+                    System.IO.File.WriteAllText(_bkpFilePath, jsonBak);
                     return customResponse;
                 }
                 else
@@ -64,10 +67,15 @@ namespace InternationalBusiness.Core.Services
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;
                     var serializedCurrencies = JsonConvert.DeserializeObject<List<Models.Currency>>(ObjResponse);
                     var filteredCurrency = (from c in serializedCurrencies
-                                           where c.@from == currencyType
-                                           select new { c }).FirstOrDefault();
+                                            where c.@from == currencyType
+                                            select new Models.Currency
+                                            {
+                                                @from = c.@from,
+                                                rate = c.rate,
+                                                to = c.to
+                                            }).FirstOrDefault();
 
-                    customResponse.Data = filteredCurrency.c;
+                    customResponse.Data = filteredCurrency;
                     customResponse.isSuccess = true;
                     return customResponse;
                 }
@@ -96,14 +104,15 @@ namespace InternationalBusiness.Core.Services
                 response.Data = jsonCurrencies;
                 response.Message = "This Data is returned from backup file since the API Endpoint was down";
                 return response;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 response.Message = "Error when trying to list all the currencies.";
                 response.ErrorMessage = e.Message;
                 response.Data = null;
                 return response;
             }
-            
+
         }
         public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByTypeBackup(string currencyType)
         {
@@ -114,9 +123,14 @@ namespace InternationalBusiness.Core.Services
                 var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
                 var filteredCurrency = (from c in jsonCurrencies
                                         where c.@from == currencyType
-                                        select new { c }).FirstOrDefault();
+                                        select new Models.Currency
+                                        {
+                                            @from = c.@from,
+                                            rate = c.rate,
+                                            to = c.to
+                                        }).FirstOrDefault();
 
-                response.Data = filteredCurrency.c;
+                response.Data = filteredCurrency;
                 response.Message = "This Data is returned from backup file since the API Endpoint was down";
                 return response;
             }
