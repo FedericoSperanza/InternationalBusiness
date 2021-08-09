@@ -24,7 +24,7 @@ namespace InternationalBusiness
         {
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            
+
             Configuration = builder.Build();
         }
 
@@ -40,8 +40,9 @@ namespace InternationalBusiness
 
             // Add our Config object so it can be injected
             services.Configure<EndPoints>(Configuration.GetSection("EndPoints"));
-
+            // Services Injections
             services.AddScoped(typeof(CurrencyService));
+            services.AddScoped(typeof(TransactionService));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
