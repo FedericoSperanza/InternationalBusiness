@@ -68,7 +68,7 @@ namespace InternationalBusiness.Core.Services
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;
                     var serializedCurrencies = JsonConvert.DeserializeObject<List<Models.Currency>>(ObjResponse);
                     var filteredCurrency = (from c in serializedCurrencies
-                                            where c.@from == currencyType
+                                            where c.@from.ToLower() == currencyType.ToLower()
                                             select new Models.Currency
                                             {
                                                 @from = c.@from,
@@ -134,7 +134,7 @@ namespace InternationalBusiness.Core.Services
                 string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
                 var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
                 var filteredCurrency = (from c in jsonCurrencies
-                                        where c.@from == currencyType
+                                        where c.@from.ToLower() == currencyType.ToLower()
                                         select new Models.Currency
                                         {
                                             @from = c.@from,

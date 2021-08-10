@@ -194,7 +194,7 @@ namespace InternationalBusiness.Core.Services
             Models.CustomResponse<Models.TransactionResume> customResponse = new Models.CustomResponse<Models.TransactionResume>();
             Models.TransactionResume tranResume = new Models.TransactionResume();
             var filteredTransaction = (from t in serializedTransactions
-                                       where t.sku == sku
+                                       where t.sku.ToLower() == sku.ToLower()
                                        select new Models.TranItemResume
                                        {
                                            index = t.index,
@@ -227,15 +227,15 @@ namespace InternationalBusiness.Core.Services
                 }
                 if (itemsNotEuro != null)
                 {
+                    Models.TranItemResume itemConvertedToEuros = new Models.TranItemResume();
                     foreach (var item in itemsNotEuro)
                     {
-                        var itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
-                        while (itemConvertedToEuros.currency != "EUR")
+                        while (item.currency != "EUR")
                         {
                             itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
-
+                            item.currency = itemConvertedToEuros.currency;
                         }
-                        inEuroList.Add(itemConvertedToEuros);
+                        inEuroList.Add(item);
                     };
                     var totalListConvertedToEuros = inEuroList.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
                     var euroTransactionsGiven = (from te in filteredTransaction

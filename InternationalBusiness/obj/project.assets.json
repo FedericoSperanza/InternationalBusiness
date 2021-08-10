@@ -12694,9 +12694,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
-      "projectName": "InternationalBusiness",
-      "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.csproj",
+      "projectUniqueName": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.API.csproj",
+      "projectName": "InternationalBusiness.API",
+      "projectPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\InternationalBusiness.API.csproj",
       "packagesPath": "C:\\Users\\Federico\\.nuget\\packages\\",
       "outputPath": "E:\\Road to Europe\\España\\Hiberus\\Test\\InternationalBusiness\\InternationalBusiness\\obj\\",
       "projectStyle": "PackageReference",
