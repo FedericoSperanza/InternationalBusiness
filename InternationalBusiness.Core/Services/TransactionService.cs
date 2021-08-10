@@ -84,97 +84,12 @@ namespace InternationalBusiness.Core.Services
                 {
                     var ObjResponse = Res.Content.ReadAsStringAsync().Result;
                     var serializedTransactions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.TranItemResume>>(ObjResponse);
-                    var filteredTransaction = (from t in serializedTransactions
-                                               where t.sku == sku
-                                               select new Models.Transaction
-                                               {
-                                                   sku = t.sku,
-                                                   amount = t.amount,
-                                                   currency = t.currency
-                                               })
-                                                .Select((item, index) => new Models.TranItemResume
-                                                {
-                                                    index = index,
-                                                    sku = item.sku,
-                                                    currency = item.currency,
-                                                    amount = item.amount
-                                                })
-                                                .ToList();
-
-                    if (filteredTransaction.Any()) { 
-                    tranResume.transactionList = filteredTransaction;
-                    var totalEuros = filteredTransaction.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
-                    tranResume.totalAmount = totalEuros;
-                    customResponse.Data = tranResume;
-                    var itemsNotEuro = (from t in filteredTransaction
-                                        where t.currency != "EUR"
-                                        select new Models.TranItemResume
-                                        {
-                                            index = t.index,
-                                            sku = t.sku,
-                                            currency = t.currency,
-                                            amount = t.amount
-                                        })
-  
-                                        .ToList();
-
-                    var allCurrencies = await _currencyService.GetAllCurrencies();
-                    if (allCurrencies.Data == null)
-                        {
-                            var allCurrenciesbak = await _currencyService.GetAllCurrenciesBackup();
-                            allCurrencies.Data = allCurrenciesbak.Data;
-                        }
-                    if (itemsNotEuro != null)
-                    {
-                        foreach (var item in itemsNotEuro)
-                        {
-                            var itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
-                            while (itemConvertedToEuros.currency != "EUR")
-                            {
-                                itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
-
-                            }
-                            inEuroList.Add(itemConvertedToEuros);
-                        };
-                        var totalListConvertedToEuros = inEuroList.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
-                        var euroTransactionsGiven = (from te in filteredTransaction
-                                                     where te.currency == "EUR"
-                                                     select new Models.TranItemResume
-                                                     {
-                                                         index = te.index,
-                                                         sku = te.sku,
-                                                         currency = te.currency,
-                                                         amount = te.amount
-                                                     }).ToList();
-                        var allProducts = new List<Models.TranItemResume>(euroTransactionsGiven.Count +
-                                                inEuroList.Count);
-                        allProducts.AddRange(euroTransactionsGiven);
-                        allProducts.AddRange(inEuroList);
-                        totalEuros += totalListConvertedToEuros;
-                        tranResume.totalAmount = Math.Round(totalEuros, 2, MidpointRounding.ToEven);
-                        var orderAllProducts = allProducts.OrderBy(x => x.index);
-                        var finalResumeTranOrdered = (from tranItem in orderAllProducts
-                                                        select new Models.TranItemResume
-                                                        {
-                                                            index = tranItem.index,
-                                                            sku = tranItem.sku,
-                                                            currency = tranItem.currency,
-                                                            amount = tranItem.amount
-                                                        }).ToList();
-
-                        customResponse.Data.transactionList = finalResumeTranOrdered;
-                        }
+                    customResponse = await CalculateTransactionResumeInEuro(serializedTransactions, sku);
                     customResponse.isSuccess = true;
                     return customResponse;
-                    }
-                    else
-                    {
-                        //sku not found
-                        return await GetTransactionBySkuBackup(sku);
-                    }
                 }
                 else
-                {               
+                {
                     return await GetTransactionBySkuBackup(sku);
                 }
             }
@@ -213,88 +128,8 @@ namespace InternationalBusiness.Core.Services
             {
                 string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
                 var serializedTransactions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.TranItemResume>>(jsonFile);
-                var filteredTransaction = (from t in serializedTransactions
-                                           where t.sku == sku
-                                           select new Models.TranItemResume
-                                           {
-                                               index = t.index,
-                                               sku = t.sku,
-                                               amount = t.amount,
-                                               currency = t.currency
-                                           })
-                                           .ToList();
+                customResponse = await CalculateTransactionResumeInEuro(serializedTransactions, sku);
 
-                tranResume.transactionList = filteredTransaction;
-                var totalEuros = filteredTransaction.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
-                tranResume.totalAmount = totalEuros;
-                customResponse.Data = tranResume;
-                var itemsNotEuro = (from t in filteredTransaction
-                                    where t.currency != "EUR"
-                                    select new Models.TranItemResume
-                                    {
-                                        index = t.index,
-                                        sku = t.sku,
-                                        currency = t.currency,
-                                        amount = t.amount
-                                    })
-                                    .ToList();
-
-                if (filteredTransaction.Any())
-                {
-
-                
-                var allCurrencies = await _currencyService.GetAllCurrencies();
-                if (allCurrencies.Data == null)
-                {
-                    var allCurrenciesbak = await _currencyService.GetAllCurrenciesBackup();
-                    allCurrencies.Data = allCurrenciesbak.Data;
-                }
-                if (itemsNotEuro != null)
-                {
-                    foreach (var item in itemsNotEuro)
-                    {
-                        var itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
-                        while (itemConvertedToEuros.currency != "EUR")
-                        {
-                            itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
-
-                        }
-                        inEuroList.Add(itemConvertedToEuros);
-                    };
-                    var totalListConvertedToEuros = inEuroList.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
-                    var euroTransactionsGiven = (from te in filteredTransaction
-                                                 where te.currency == "EUR"
-                                                 select new Models.TranItemResume
-                                                 {
-                                                     index = te.index,
-                                                     sku = te.sku,
-                                                     currency = te.currency,
-                                                     amount = te.amount
-                                                 }).ToList();
-                        var allProducts = new List<Models.TranItemResume>(euroTransactionsGiven.Count +
-                                            inEuroList.Count);
-                    allProducts.AddRange(euroTransactionsGiven);
-                    allProducts.AddRange(inEuroList);
-                    totalEuros += totalListConvertedToEuros;
-                    tranResume.totalAmount = Math.Round(totalEuros, 2, MidpointRounding.ToEven);
-                    var orderAllProducts = allProducts.OrderBy(x => x.index);
-                    var finalResumeTranOrdered = (from tranItem in orderAllProducts
-                                                  select new Models.TranItemResume
-                                                  {
-                                                      index = tranItem.index,
-                                                      sku = tranItem.sku,
-                                                      currency = tranItem.currency,
-                                                      amount = tranItem.amount
-                                                  }).ToList();
-
-                        customResponse.Data.transactionList = finalResumeTranOrdered;
-                    }
-                    else
-                    {
-                        customResponse.ErrorMessage = "Error while trying to get Transaction Item.";
-                        return customResponse;
-                    }
-                }
                 customResponse.Message = "This Data is returned from backup file since the API Endpoint was down";
                 return customResponse;
             }
@@ -352,6 +187,96 @@ namespace InternationalBusiness.Core.Services
                                       }).FirstOrDefault();
 
             return getStepTransaction;
+        }
+
+        private async Task<Models.CustomResponse<Models.TransactionResume>> CalculateTransactionResumeInEuro(List<Models.TranItemResume> serializedTransactions, string sku)
+        {
+            Models.CustomResponse<Models.TransactionResume> customResponse = new Models.CustomResponse<Models.TransactionResume>();
+            Models.TransactionResume tranResume = new Models.TransactionResume();
+            var filteredTransaction = (from t in serializedTransactions
+                                       where t.sku == sku
+                                       select new Models.TranItemResume
+                                       {
+                                           index = t.index,
+                                           sku = t.sku,
+                                           amount = t.amount,
+                                           currency = t.currency
+                                       })
+                                           .ToList();
+            if (filteredTransaction.Any())
+            {
+                tranResume.transactionList = filteredTransaction;
+                var totalEuros = filteredTransaction.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
+                tranResume.totalAmount = totalEuros;
+                customResponse.Data = tranResume;
+                var itemsNotEuro = (from t in filteredTransaction
+                                    where t.currency != "EUR"
+                                    select new Models.TranItemResume
+                                    {
+                                        index = t.index,
+                                        sku = t.sku,
+                                        currency = t.currency,
+                                        amount = t.amount
+                                    })
+                                    .ToList();
+                var allCurrencies = await _currencyService.GetAllCurrencies();
+                if (allCurrencies.Data == null)
+                {
+                    var allCurrenciesbak = await _currencyService.GetAllCurrenciesBackup();
+                    allCurrencies.Data = allCurrenciesbak.Data;
+                }
+                if (itemsNotEuro != null)
+                {
+                    foreach (var item in itemsNotEuro)
+                    {
+                        var itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
+                        while (itemConvertedToEuros.currency != "EUR")
+                        {
+                            itemConvertedToEuros = GetConversionToEuro(item, allCurrencies.Data);
+
+                        }
+                        inEuroList.Add(itemConvertedToEuros);
+                    };
+                    var totalListConvertedToEuros = inEuroList.AsEnumerable().Where(t => t.currency == "EUR").Sum(c => c.amount);
+                    var euroTransactionsGiven = (from te in filteredTransaction
+                                                 where te.currency == "EUR"
+                                                 select new Models.TranItemResume
+                                                 {
+                                                     index = te.index,
+                                                     sku = te.sku,
+                                                     currency = te.currency,
+                                                     amount = te.amount
+                                                 }).ToList();
+                    var allProducts = new List<Models.TranItemResume>(euroTransactionsGiven.Count +
+                                        inEuroList.Count);
+                    allProducts.AddRange(euroTransactionsGiven);
+                    allProducts.AddRange(inEuroList);
+                    totalEuros += totalListConvertedToEuros;
+                    tranResume.totalAmount = Math.Round(totalEuros, 2, MidpointRounding.ToEven);
+                    var orderAllProducts = allProducts.OrderBy(x => x.index);
+                    var finalResumeTranOrdered = (from tranItem in orderAllProducts
+                                                  select new Models.TranItemResume
+                                                  {
+                                                      index = tranItem.index,
+                                                      sku = tranItem.sku,
+                                                      currency = tranItem.currency,
+                                                      amount = tranItem.amount
+                                                  }).ToList();
+
+                    customResponse.Data.transactionList = finalResumeTranOrdered;
+                }
+                else
+                {
+                    customResponse.ErrorMessage = "Error while trying to get Transaction Item.";
+                    return customResponse;
+                }
+            }
+            else
+            {
+                return await GetTransactionBySkuBackup(sku);
+            }
+            customResponse.Message = "This Data is returned from backup file since the API Endpoint was down";
+            return customResponse;
         }
 
     }
