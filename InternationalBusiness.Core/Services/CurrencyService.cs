@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using InternationalBusiness.Core.Services.Interfaces;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace InternationalBusiness.Core.Services
 {
@@ -55,9 +56,9 @@ namespace InternationalBusiness.Core.Services
                 return customResponse;
             }
         }
-        public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByType(string currencyType)
+        public async Task<Models.CustomResponse<List<Models.Currency>>> GetCurrencyByType(string currencyType)
         {
-            Models.CustomResponse<Models.Currency> customResponse = new Models.CustomResponse<Models.Currency>();
+            Models.CustomResponse <List<Models.Currency>> customResponse = new Models.CustomResponse<List<Models.Currency>>();
             try
             {
                 var client = new HttpClient();
@@ -73,7 +74,7 @@ namespace InternationalBusiness.Core.Services
                                                 @from = c.@from,
                                                 rate = c.rate,
                                                 to = c.to
-                                            }).FirstOrDefault();
+                                            }).ToList();
 
                     customResponse.Data = filteredCurrency;
                     customResponse.isSuccess = true;
@@ -101,9 +102,18 @@ namespace InternationalBusiness.Core.Services
             {
                 string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
                 var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
-                response.Data = jsonCurrencies;
-                response.Message = "This Data is returned from backup file since the API Endpoint was down";
-                return response;
+                if (jsonCurrencies.Any())
+                {
+                    response.Data = jsonCurrencies;
+                    response.Message = "This Data is returned from backup file since the API Endpoint was down";
+                    return response;
+                }
+                else
+                {
+                    response.Data = null;
+                    response.ErrorMessage = "Currency List is Empty !";
+                    return response;
+                }
             }
             catch (Exception e)
             {
@@ -114,11 +124,13 @@ namespace InternationalBusiness.Core.Services
             }
 
         }
-        public async Task<Models.CustomResponse<Models.Currency>> GetCurrencyByTypeBackup(string currencyType)
+        public async Task<Models.CustomResponse<List<Models.Currency>>> GetCurrencyByTypeBackup(string currencyType)
         {
-            Models.CustomResponse<Models.Currency> response = new Models.CustomResponse<Models.Currency>();
+            var currentMethod = MethodBase.GetCurrentMethod().Name;
+            Models.CustomResponse<List<Models.Currency>> response = new Models.CustomResponse<List<Models.Currency>>();
             try
             {
+                
                 string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
                 var jsonCurrencies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.Currency>>(jsonFile);
                 var filteredCurrency = (from c in jsonCurrencies
@@ -128,11 +140,19 @@ namespace InternationalBusiness.Core.Services
                                             @from = c.@from,
                                             rate = c.rate,
                                             to = c.to
-                                        }).FirstOrDefault();
-
-                response.Data = filteredCurrency;
-                response.Message = "This Data is returned from backup file since the API Endpoint was down";
-                return response;
+                                        }).ToList();
+                if (filteredCurrency.Any())
+                {
+                    response.Data = filteredCurrency;
+                    response.Message = "This Data is returned from backup file since the API Endpoint was down";
+                    return response;
+                }
+                else
+                {
+                    response.Data = null;
+                    response.ErrorMessage ="Currency not Found !";
+                    return response;
+                }
             }
             catch (Exception e)
             {

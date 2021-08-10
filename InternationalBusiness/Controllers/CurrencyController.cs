@@ -44,10 +44,10 @@ namespace InternationalBusiness.Controllers
 
         // GET: api/Currencies/5
         [HttpGet("{currencyType}", Name = "Get")]
-        public async Task<CustomResponse<Currency>> GetCurrencyByType(string currencyType)
+        public async Task<CustomResponse<List<Currency>>> GetCurrencyByType(string currencyType)
         {
             var resp = await _currencyService.GetCurrencyByType(currencyType);
-            if (resp.Data != null)
+            if (resp.Data.Any())
             {
                 return resp;
             }
