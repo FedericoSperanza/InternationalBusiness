@@ -10,4 +10,10 @@ Run `http://localhost:52825/api/Transaction/{sku}` to get all Transactions by sk
 Run `http://localhost:52825/api/Currency/` to get all Currencies.
 Run `http://localhost:52825/api/Currency/{currencyType}` to get all Currencies based on a type given.
 
+## BackUp Files
+
+There are 2 files where the Data from the Currency and Transaction Endpoints data are saved:
+`bkpCurrency.json`
+`bkpTransaction.json`
+The data is saved in this files after a success response from the endpoints and in case of somethings is not found in the API the code will try to find also in this files.
 
