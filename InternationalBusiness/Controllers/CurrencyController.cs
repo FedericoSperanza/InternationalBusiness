@@ -31,7 +31,6 @@ namespace InternationalBusiness.Controllers
             var resp = await _currencyService.GetAllCurrencies();
             if (resp.Data != null)
             {
-                //ToDo override bkCurrency file with updated data
                 return resp;
             }
             else
