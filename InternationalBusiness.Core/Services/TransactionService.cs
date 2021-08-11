@@ -128,10 +128,28 @@ namespace InternationalBusiness.Core.Services
             {
                 string jsonFile = System.IO.File.ReadAllText(_bkpFilePath);
                 var serializedTransactions = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Models.TranItemResume>>(jsonFile);
-                customResponse = await CalculateTransactionResumeInEuro(serializedTransactions, sku);
+                var filteredTransactionBak = (from t in serializedTransactions
+                                              where t.sku.ToLower() == sku.ToLower()
+                                              select new Models.TranItemResume
+                                              {
+                                                  index = t.index,
+                                                  sku = t.sku,
+                                                  amount = t.amount,
+                                                  currency = t.currency
+                                              })
+                               .ToList();
+                if (filteredTransactionBak.Any())
+                {
+                    customResponse = await CalculateTransactionResumeInEuro(serializedTransactions, sku);
 
-                customResponse.Message = "This Data is returned from backup file since the API Endpoint was down";
-                return customResponse;
+                    customResponse.Message = "This Data is returned from backup file since the API Endpoint was down";
+                    return customResponse;
+                }
+                else
+                {
+                    customResponse.ErrorMessage = "Error while trying to get Transaction Item. Not Found";
+                    return customResponse;
+                }
             }
             catch (Exception e)
             {
