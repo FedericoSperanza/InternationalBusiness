@@ -30,12 +30,10 @@ namespace InternationalBusiness.Controllers
             var resp = await _transactionService.GetAllTransactions();
             if (resp.Data != null)
             {
-                //ToDo override bkCurrency file with updated data
                 return resp;
             }
             else
             {
-
                 var res = await _transactionService.GetAllTransactionsBackup();
                 return res;
             }
